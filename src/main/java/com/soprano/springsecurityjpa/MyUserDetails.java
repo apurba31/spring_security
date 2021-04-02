@@ -2,7 +2,10 @@ package com.soprano.springsecurityjpa;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
 
+import org.springframework.boot.autoconfigure.security.SecurityProperties.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -10,18 +13,31 @@ import org.springframework.security.core.userdetails.UserDetails;
 public class MyUserDetails implements UserDetails
 {
 	private String userName;
+	private String password;
+	private boolean active;
+	private List<GrantedAuthority> authorities;
 	
-	public MyUserDetails(String userName) {
+	public MyUserDetails(User user) {
 		this.userName = userName;
+		this.password = password;
+		this.active = active;
+		this.authorities = Arrays.stream(getRoles().split(","))
+				.map(SimpleGrantedAuthority::new)
+				.collect(Collectors.toList());
 	}
 	
+	private String getRoles() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 	public MyUserDetails() {
 	}
 
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
-		return Arrays.asList(new SimpleGrantedAuthority("ROLE_USER"));
+		return authorities;
 	}
 
 	@Override
